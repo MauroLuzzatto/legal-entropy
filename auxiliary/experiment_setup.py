@@ -64,22 +64,8 @@ def select_experiment(experiment_name):
                        (os.path.join(pathMain, r'de_BGH_shuffled'), ['de17']),
                        (os.path.join(pathMain, r'de_en_shuffled'), ['de18']),
                        (os.path.join(pathMain, r'de_en_shuffled'), ['en18'])
-                       ]     
-        
-        
-    
-    elif experiment_name == 'test':
-        
-        # define model training
-        num_corpus = 1
-        single = False
-        word_list_csv = None
-        
-        rename_models(os.path.join(pathMain, 'de_StR_r', 'Models'), 'de', 'de5')
-        pathFolders = [(os.path.join(pathMain, r'de_StR_r'), ['de5'])]
-        
-        
-    
+                       ]          
+                       
     elif experiment_name == 'skip_final':
         
         num_corpus = 5

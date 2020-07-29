@@ -4,8 +4,6 @@ Created on Sat Jul 11 15:26:08 2020
 
 @author: mauro
 """
-
-
 def select_corpus(number):
     """
     define the different corpus that can be used in the analysis
