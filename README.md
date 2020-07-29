@@ -1,6 +1,10 @@
 
+# Entropy in Legal Language (WIP)
 
-
+![Python](https://img.shields.io/badge/python-v3.6+-blue.svg)
+ 
+ <!-- [![Total Downloads](https://poser.pugx.org/phpunit/phpunit/downloads)](//packagist.org/packages/phpunit/phpunit) -->
+ <!-- [![Build Status](https://travis.ibm.com/Mauro-Luzzatto/-Data-Modelling.svg?token=zmafNzx54WQZmTrFgEaV&branch=master)](https://travis.ibm.com/Mauro-Luzzatto/-Data-Modelling) -->
 
 <!-- 
 e.g
@@ -9,14 +13,6 @@ Add paper name in the small github repo box
 
 Tragin, M. & Vaulot, D. 2019. Novel diversity within marine Mamiellophyceae (Chlorophyta) unveiled by metabarcoding. Sci. Rep. 9:5190. https://www.nature.com/articles/s41598-019-41680-6
  -->
-
-# Entropy in Legal Language (Update)
-
-![Python](https://img.shields.io/badge/python-v3.6+-blue.svg)
- 
- <!-- [![Total Downloads](https://poser.pugx.org/phpunit/phpunit/downloads)](//packagist.org/packages/phpunit/phpunit) -->
- <!-- [![Build Status](https://travis.ibm.com/Mauro-Luzzatto/-Data-Modelling.svg?token=zmafNzx54WQZmTrFgEaV&branch=master)](https://travis.ibm.com/Mauro-Luzzatto/-Data-Modelling) -->
-
 
 
 <!-- Code for use in measuring the sophistication of political text
@@ -185,14 +181,14 @@ After the installation executed the code as follows:
 
 
 ### Python Module Requirements
-- **Python**: Python==3.6.8
+- **python**: Python==3.6.8
 - **gensim** gensim==3.8.1
-- **Pandas**: pandas==1.0.3
-- **Numpy**: numpy==1.18.2
+- **pandas**: pandas==1.0.3
+- **numpy**: numpy==1.18.2
 - **spacy**: spacy==2.2.2
 - **scipy**: scipy==1.1.0
 - **nltk**: nltk==3.2.4
-- **Matplotlib**: matplotlib==3.2.1
+- **matplotlib**: matplotlib==3.2.1
 - **seaborn** seabron==0.10.1
 
 

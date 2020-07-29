@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pdf
+*.pickle
+*.pkl
+*.csv
+
+/jupyter_notebooks
+/swiss criminal code
+/reuters
+/relevant_words
+
+gensim_bigram.py
+gensim_accuracy.py
+check_prallel_corpora.py
+
+openlegaldata/bgh_files.pickle
+openlegaldata/*.csv
+openlegaldata/BGH/*.txt
+openlegaldata/*.zip
+# exclude this folder
+exploration
+
+
+
+Wörter StGB.csv
+Wörter StGB.pdf
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+1990/
+2012/
+_archive/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/

@@ -1,0 +1,1 @@
+{"epochs": 30, "min_count": 20, "window": 2, "size": 300, "workers": 3, "hs": 1, "sg": 1, "negative": 0, "sample": 6e-05, "alpha": 0.03, "min_alpha": 0.0007}
