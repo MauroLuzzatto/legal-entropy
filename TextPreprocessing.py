@@ -21,7 +21,7 @@ import configparser
 np.random.seed(0)
  
 
-from auxiliary.corpus import select_corpus
+from auxiliary.corpus_setup import select_corpus
 from auxiliary.log import initalize_logger
 
 from auxiliary.preprocessing import sentence_preprocessing, plot_word_frequency, \
@@ -300,8 +300,6 @@ def main(corpus_info):
 
 if __name__ == "__main__":
     
-      
-
     # set the sentence sampling size
     create_index_list = True
     # downsample the number of sentences extracted from the corpus
@@ -319,9 +317,7 @@ if __name__ == "__main__":
     plot = True
     load = False
     
-    for number in [1]:
-        
+    for number in [1]:    
         corpus_info = select_corpus(number)
-    
         documents, sentences, sentences_original = main(corpus_info)
     

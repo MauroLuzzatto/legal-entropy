@@ -54,7 +54,7 @@ The code is structured in five parts:
 
 
 ## 1) Experiment Setup
-In the experiment setup the relevant corpus are loaded and the type of experiment is defined.
+In the experiment setup the relevant corpus is loaded and the type of experiment is defined.
 - `corpus_setup.py`: defined the corpora that should be loaded and preprocessed
 <!-- * `name_of_folder = 'EuroParl' # a folder with this name will be created`
 * `filename = 'EuroParl_filename.csv'  # documents should be separated by row`

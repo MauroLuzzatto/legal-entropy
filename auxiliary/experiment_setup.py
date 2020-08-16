@@ -29,7 +29,7 @@ def select_experiment(experiment_name):
     pathSave = create_folder(os.path.join(pathMain, experiment_name))
 
                       
-    if experiment_name == 'final_roland':
+    if experiment_name == 'final':
         
         num_corpus = 1
         single = False

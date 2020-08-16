@@ -221,11 +221,10 @@ if __name__ == "__main__":
     shuffle = True
     save = True
     
-    experiment_name = 'final_roland'
+    experiment_name = 'final'
         
     pathFolders, *_ = select_experiment(experiment_name)
- 
-    
+     
     for pathFolder, languages in pathFolders:
         w2v_model = main(pathFolder, languages)
         

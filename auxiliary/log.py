@@ -5,7 +5,9 @@ Created on Sun Jul 19 20:13:34 2020
 @author: mauro
 """
 import logging
+import os
 
+# TODO: make class
 def initalize_logger(language, pathSave, stage):
     """
     Create a log file to record the experiment's logs
