@@ -1,1 +1,1 @@
-{"threshold_bigram": 10, "threshold_trigram": 40, "min_count": 20}
+{"threshold_bigram": 20, "threshold_trigram": 60, "min_count": 3}

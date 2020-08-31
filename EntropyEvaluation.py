@@ -10,11 +10,13 @@ from time import time  # To time our operations
 import os, sys
 import pickle
 from scipy.stats import entropy
-import json
-import warnings
+# import json
+# import warnings
 import configparser
 
+# from gensim.models.callbacks import CallbackAny2Vec
 from gensim.models import Word2Vec
+from ModelTraining import callback
 
 from auxiliary.preprocessing import create_folder
 from auxiliary.experiment_setup import select_experiment
@@ -82,16 +84,15 @@ if __name__ == "__main__":
     config.read('config.ini')    
     pathMain = config['paths']['main']
     
-  
-    gensim_proba_calc = True
+    gensim_proba_calc = False
     base_entropy = 2
     
-    experiment_name = 'final_roland'
+    experiment_name = 'legal_code'
     pathFolders, pathSave, word_list_csv, num_corpus, single = select_experiment(experiment_name)
 
 
     # define paths
-    pathStatistics = create_folder(os.path.join(pathSave, 'Statistics'))
+    # pathStatistics = create_folder(os.path.join(pathSave, 'Statistics'))
     pathLogs = create_folder(os.path.join(pathSave, 'Logs'))
     pathPlot = create_folder(os.path.join(pathSave, 'Plots'))
     
@@ -107,59 +108,64 @@ if __name__ == "__main__":
         use_relevant_words = False
 
     entropy_distribution = {}
-    relevant_words = {}
+    word_distribution = {}
 
     # loop over the different folders containing the models
     for pathFolder, languages in pathFolders:
-        print('folder_name: {}\n--- languages: {}\n'.format(pathLogs, languages))
+        print('\nfolder_name: {}\n-- languages: {}\n'.format(pathFolder, languages))
         pathModels = os.path.join(pathFolder, 'Models')
         pathPlots = create_folder(os.path.join(pathFolder, 'Plots'))
-
+        
+        name_of_folder = os.path.split(pathFolder)[-1]
+ 
         # loop over the different languages per folder
-        for language in languages:
-            # initalize the logger, per language
-            logger = initalize_logger(language, pathLogs, 'evaluation')
+        # for language in languages:
+        language = languages[0]
             
-            # calculate the word ambiguity
-            ambiguity = {}
-            for count in range(num_corpus):
-                
-                # load model method
-                model_name = '{}_{}_full_model.model'.format(language, count)
-                if model_name not in os.listdir(pathModels):
-                    print('Model not found!: {}'.format(model_name))
-                    continue    
-                    
-                # load the models
-                w2v_model = Word2Vec.load(os.path.join(pathModels, model_name))
-                print('{} loaded'.format(model_name))
+        # initalize the logger, per language
+        logger = initalize_logger(language, pathLogs, 'evaluation')
+        
+        # calculate the word ambiguity
+        ambiguity = {}
+        for count in range(num_corpus):
             
-
-                # get word list
-                if use_relevant_words:
-                    # get the list of relevant words based on dataframe
-                    relevant_words[language] = get_list_of_relevant_words(df_words, language, single)
-                else:
-                    relevant_words[language] = w2v_model.wv.vocab 
-                    print('use_relevant_words: {}'.format(use_relevant_words))
-
-                word_list = relevant_words[language]
-                    
-                print('gensim_proba_calc: {}'.format(gensim_proba_calc))
-                t = time()
+            # load model method
+            model_name = '{}_{}_full_model.model'.format(language, count)
+            if model_name not in os.listdir(pathModels):
+                print('Model not found!: {}'.format(model_name))
+                continue    
                 
-                # get word entropy
-                for _count, w in enumerate(word_list):
-                    if w not in ambiguity:
-                        ambiguity[w] = []
-                    # calculate probabilities
-                    probabilities = predict_context_word_proba(w2v_model, w, gensim_proba_calc)  
-                    # calculate entropy
-                    ambiguity[w].append(entropy(probabilities, base=base_entropy))                    
-                print('Time to calcualte ambiguity: {} mins\n'.format(round((time() - t) / 60, 2)))            
+            # load the models
+            w2v_model = Word2Vec.load(os.path.join(pathModels, model_name))
+            print('{} loaded'.format(model_name))
+        
 
-            entropy_distribution[language] = ambiguity
+            # get word list
+            if use_relevant_words:
+                # get the list of relevant words based on dataframe
+                word_list = get_list_of_relevant_words(df_words, language, single)
+            else:
+                word_list = w2v_model.wv.vocab 
+                print('use_relevant_words: {}'.format(use_relevant_words))
+                
+            print('gensim_proba_calc: {}'.format(gensim_proba_calc))
+            
+            t = time()
+            # get word entropy
+            for _count, w in enumerate(word_list):
+                if w not in ambiguity:
+                    ambiguity[w] = []
+
+                # calculate probabilities
+                probabilities = predict_context_word_proba(w2v_model, w, gensim_proba_calc)  
+                # calculate entropy
+                ambiguity[w].append((entropy(probabilities, base=base_entropy), w2v_model.wv.vocab[w].count))
+                 
+            print('Time to calculate entropy: {} mins\n'.format(round((time() - t) / 60, 2)))            
+
+        entropy_distribution[name_of_folder] = ambiguity
+     
                                        
-    # save the ambigutiy distribution
-    with open(os.path.join(pathSave, 'distribution_lan.pickle'), 'wb') as fp:
+    # save the ambigutiy distribution        
+    with open(os.path.join(pathSave, 'entropy_distribution.pickle'), 'wb') as fp:
         pickle.dump(entropy_distribution, fp)

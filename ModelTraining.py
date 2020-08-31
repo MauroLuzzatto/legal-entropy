@@ -51,6 +51,19 @@ class callback(CallbackAny2Vec):
         self.epoch = 0
 
     def on_epoch_end(self, model):
+        """
+        get model training loss.
+
+        Parameters
+        ----------
+        model : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         loss = model.get_latest_training_loss()
         if self.epoch == 0:
             print('Loss after epoch {}: {}'.format(self.epoch, loss))
@@ -110,7 +123,7 @@ class ModelTraining(object):
                                  alpha=self.hyperparameters['alpha'],
                                  min_alpha=self.hyperparameters['min_alpha'])
         
-        self.w2v_model.build_vocab(self.sent_list, progress_per=1000000)
+        self.w2v_model.build_vocab(self.sent_list, progress_per=6000000)
         print('Time to build vocab: {} mins'.format(round((time() - t) / 60, 2)))
         
         # train the w2v model
@@ -154,7 +167,7 @@ class ModelTraining(object):
                     bbox_inches = "tight")
         
     
-def main(pathFolder, languages):
+def main(pathFolder, name_of_folder, languages):
     """
     conduct the model training
     """
@@ -166,51 +179,52 @@ def main(pathFolder, languages):
     with open(os.path.join(pathFolder, 'index_list.pickle'), 'rb') as fp:
         index_list = pickle.load(fp)
 
-    # loop over the languages
-    for language in languages:
+    # todo: remove
+    language = languages[0]
+   
         
-        # init the logger
-        logger = initalize_logger(language, pathLogs, stage='training')
-        logger.info('shuffle: {}'.format(shuffle))
+    # init the logger
+    logger = initalize_logger(language, pathLogs, stage='training')
+    logger.info('shuffle: {}'.format(shuffle))
+
+    # load the processed sentences
+    with open(os.path.join(pathFolder, '{}.pickle'.format(name_of_folder)), 'rb') as fp:
+        sentences = pickle.load(fp)
     
-        # load the processed sentences
-        with open(os.path.join(pathFolder, '{}.pickle'.format(language[:2])), 'rb') as fp:
-            sent = pickle.load(fp)
-        
-        # create the bootstrap corpora
-        corpus = create_corpus(index_list, sent)
-                    
-        # train the models for the created corpora (sentences, index_list)
-        for count, sent_list in enumerate(corpus.values()): 
-            print('Number of model trained: {}/{}'.format(count, len(corpus.values())))
-            
-            if shuffle:
-                # shuffle the tokens per sentence                    
-                sent_list = shuffle_tokens_per_sentence(sent_list)          
-                                                            
-            word2vec_model = ModelTraining(sent_list, 
-                                           language, 
-                                           count, 
-                                           pathModels)
-            
-            # get set of hyperparameters
-            hyperparameters = word2vec_model.load_hyperparameters()
-            logger.info('hyperparamters: {}'.format(hyperparameters))
-            
-            # train the model
-            w2v_model = word2vec_model.training() 
-            
-            # save the model
-            if save:
-                word2vec_model.save()
-            # evaluate the word2vec model
-            if evaluate:
-                word2vec_model.evaluation()
-            # plot word frequency
-            if plot:
-                word2vec_model.frequency_dist()
+    # create the bootstrap corpora
+    corpus = create_corpus(index_list, sentences)
                 
-            return w2v_model
+    # train the models for the created corpora (sentences, index_list)
+    for count, sentences_list in enumerate(corpus.values()): 
+        print('Number of model trained: {}/{}'.format(count, len(corpus.values())))
+        
+        if shuffle:
+            # shuffle the tokens per sentence                    
+            sentences_list = shuffle_tokens_per_sentence(sentences_list)          
+                                                        
+        word2vec_model = ModelTraining(sentences_list, 
+                                       language, 
+                                       count, 
+                                       pathModels)
+        
+        # get set of hyperparameters
+        hyperparameters = word2vec_model.load_hyperparameters()
+        logger.info('hyperparamters: {}'.format(hyperparameters))
+        
+        # train the model
+        w2v_model = word2vec_model.training() 
+        
+        # save the model
+        if save:
+            word2vec_model.save()
+        # evaluate the word2vec model
+        if evaluate:
+            word2vec_model.evaluation()
+        # plot word frequency
+        if plot:
+            word2vec_model.frequency_dist()
+            
+        return w2v_model
 
 
 if __name__ == "__main__":
@@ -218,15 +232,16 @@ if __name__ == "__main__":
 
     plot = True
     evaluate = True
-    shuffle = True
+    shuffle = False
     save = True
     
-    experiment_name = 'final'
+    experiment_name = 'legal_code'
         
     pathFolders, *_ = select_experiment(experiment_name)
-     
+ 
     for pathFolder, languages in pathFolders:
-        w2v_model = main(pathFolder, languages)
+        name_of_folder = os.path.split(pathFolder)[-1]
+        w2v_model = main(pathFolder, name_of_folder, languages)
         
         
             

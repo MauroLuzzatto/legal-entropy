@@ -8,9 +8,9 @@ Created on Mon Dec 23 21:51:22 2019
 import pandas as pd  # For data handling
 from time import time  # To time our operations
 import os
-import multiprocessing
+#import multiprocessing
 import numpy as np
-import sys
+#import sys
 import json
 #import logging  # Setting up the loggings to monitor gensim
 import pickle
@@ -37,7 +37,6 @@ def sentence_selection(sentences):
     return [sent.strip() for sent in sentences if (sent or not sent.isspace()) \
                                                    and len(sent.split()) > 2]
 
-# renmae to TextPreprocessing
 class TextPreprocessing(object):
     
     def __init__(self, filename, language, name_of_folder, pathMain, pathLoad):
@@ -55,6 +54,7 @@ class TextPreprocessing(object):
         self.pathFolder = create_folder(os.path.join(self.pathMain, self.name_of_folder))
         self.pathPlots = create_folder(os.path.join(self.pathFolder, 'Plots'))
         self.pathLogs = create_folder(os.path.join(self.pathFolder, 'Logs'))
+        self.pathCSV = create_folder(os.path.join(self.pathFolder, 'CSV'))
     
     def read_csv(self, delimiter, column_name='text'):
         """ 
@@ -64,10 +64,11 @@ class TextPreprocessing(object):
                          delimiter=delimiter, 
                          index_col=0)
         
-        self.documents = df[column_name].tolist()
+        self.documents = [_text for _text in df[column_name].tolist() if isinstance(_text, str)]
+        
+        
         # remove nan value
-        self.documents = [document for document in self.documents 
-                          if not isinstance(document, float)]
+        self.documents = [document for document in self.documents if not isinstance(document, float)]
         
         # get the number of sentences
         self.logger.info('documents: {}'.format(len(self.documents)))
@@ -91,10 +92,22 @@ class TextPreprocessing(object):
         """
         clean_docs = []
         for doc in self.documents:
+            
+            abbrevation_list = ['div.', 'Pub.', 'Misc.', 'ch.','u.','u.a.', 
+                                '1.','2.', '3.','4.','5.','6.','7.', '8.','9.','0.', 
+                                'Art.','Nr.','vgl.',
+                                 'ff.','Aufl.','Rn.','Fn.',
+                                 'Dr.','Prof.','II.','III.', 'f.', 'Reorg.',
+                                 'Jan.', 'Feb.','Mar.', 'Apr.', 'Jun.', 'Jul.', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.']
+            for abbrevation in abbrevation_list:
+                doc = re.sub(abbrevation, lambda x: x.group().replace('.',''),doc)
+                                     
+            
             if self.language == 'en':
-                doc = re.sub('Misc.|u.|u.a.|1.|2.|3.|4.|5.|6.|7.|8.|9.|0.|Art.|Nr.|vgl.|ff.|Aufl.|Rn.|Fn.|Dr.|Prof.|II.|III.|f.', lambda x: x.group().replace('.',''), doc)
+                # doc = re.sub('Misc.|u.|u.a.|1.|2.|3.|4.|5.|6.|7.|8.|9.|0.|Art.|Nr.|vgl.|ff.|Aufl.|Rn.|Fn.|Dr.|Prof.|II.|III.|f.', lambda x: x.group().replace('.',''), doc)
                 doc = re.sub('i.e.|ed.|Art.|L.Ed.|U.S.C.A.|seq.|C.C.A.|D.C.|S.Ct.|c.|i.|f.|Ed.|Ct.|v.|Inc.|Div.|U.S.|Sup.|Co.|10.|11.|12.|13.|14.|15.|16.|17.|18.|19.|20.|21.|22.|23.|24.|25.|26.|27.|28.|29.|30.|31.|II.|III.|Sci.|loci.|Int.',lambda x: x.group().replace('.',''), doc)
                 doc = re.sub('e.g.|Pub.L.|No.|id.|S.Rep.|S.Res.|Sess.|Cong.Rec.|cl.|Art.|Pt.A|U.S.S.G.|Ch.|Circ.|App.A.|Cf.|Ct.Cl.|C.C.A.|Ins.|Stat.|Ry.|Wall.|Rep.|Pa.|Bi.|e.V.|cent.|36.|37.|39.|40.|41.|42.|43.|44.|45.|50.|51.|52.|53.|54.|55.|56.|57.|58.|59.|60.|61.|62.|63.|64.|65.|66.|67.|68.|69.|App.|OD.|m.|Mi.|Ti.|Ka.|Diss.|Ed.|ders.|jug.|Öz.|Co.|j.|Özk.|St.|Sz.|Ö.|A.|B.|C.|D.|E.|F.|G.|H.|I.|J.|K.|L.|M.|N.|O.|P.|Q.|R.|S.|T.|U.|V.|W.|X.|Y.|Z.|Sch.',lambda x: x.group().replace('.',''),doc)
+            
             elif self.language == 'de':
                  # find abbrevations and remove dot
                  doc = re.sub('Misc.|u.|u.a.|1.|2.|3.|4.|5.|6.|7.|8.|9.|0.|Art.|Nr.|vgl.|ff.|Aufl.|Rn.|Fn.|Dr.|Prof.|II.|III.|f.', lambda x: x.group().replace('.',''), doc)
@@ -119,12 +132,23 @@ class TextPreprocessing(object):
         split paragraphs into sentences 
         """
         
-        nlp.add_pipe(nlp.create_pipe('sentencizer'))
+        # nlp.add_pipe(nlp.create_pipe('sentencizer'))
         # split parapraphs into sentences
         sentences = []
         for _count, paragraph in enumerate(nlp.pipe(self.paragraphs, n_threads=-1, batch_size=1000)):
             # tokenize the sentences
-            sentences.append([sent.text for sent in paragraph.sents])
+            
+            # sentences.append([sent.text for sent in paragraph.sents])
+            # TODO: decide change?
+            for sent in paragraph.sents:
+                if ';' in sent.text:
+                    for sent in sent.text.split(';'):
+                        sentences.append([sent])
+                        
+                else:
+                    sentences.append([sent.text])
+
+                    
         
         # flatten the list of sentences
         sentences = list(chain.from_iterable(sentences))
@@ -151,26 +175,28 @@ class TextPreprocessing(object):
         with open(os.path.join(self.pathFolder, 'index_list.pickle'), 'wb') as fp:
             pickle.dump(index_list, fp)
 
-    def save_files(self):
+    def save_files(self, corpus_info):
         """ 
         save the processed sentences and the raw text
         """
-        if self.documents is not None:
-            # save the processed documents
-            with open(os.path.join(self.pathFolder, 'raw_text_{}.pickle'.format(self.language)), 'wb') as fp:
-                pickle.dump(self.documents, fp)
+        # if self.documents is not None:
+        #     # save the processed documents
+        #     with open(os.path.join(self.pathFolder, 'raw_text_{}.pickle'.format(self.language)), 'wb') as fp:
+        #         pickle.dump(self.documents, fp)
         
+        
+  
         # save the processed sentences
-        with open(os.path.join(self.pathFolder, '{}.pickle'.format(self.language)), 'wb') as fp:
+        with open(os.path.join(self.pathFolder, '{}.pickle'.format(corpus_info['name_of_folder'])), 'wb') as fp:
             pickle.dump(self.sent, fp)
         
         
-    def load_processed_sentences(self):
+    def load_files(self, corpus_info):
         """ 
         load the sentences
         """
         # load processed documents
-        with open(os.path.join(self.pathFolder, '{}.pickle'.format(self.language)), 'rb') as f:
+        with open(os.path.join(self.pathFolder, '{}.pickle'.format(corpus_info['name_of_folder'])), 'rb') as f:
             self.sent = pickle.load(f)
             
         self.logger.info('Clean sentences loaded: {}'.format('{}.pickle'.format(self.language)))
@@ -189,16 +215,16 @@ class TextPreprocessing(object):
         return sentence_selection(sentences_original)
     
     
-    def load_ngram(self, ngram_filename='ngram.json'):
+    def load_ngram(self, ngram_file='ngram.json'):
         """
         load n-gram parameters
         """
-        with open(ngram_filename) as json_file:
+        with open(ngram_file) as json_file:
             self.n_gram = json.load(json_file)
         self.logger.info('n_gram: {}'.format(self.n_gram))
-        return self.ngram
+        return self.n_gram
     
-    def execute_preprocessing(self, sentences_original, lowercase, lemmatize):
+    def execute_preprocessing(self, sentences_original, lowercase, lemmatize, remove_stopwords):
         """ 
         conduct text preprocessing 
         """
@@ -208,9 +234,10 @@ class TextPreprocessing(object):
         sentences = sentence_preprocessing(sentences_original, 
                                            nlp,
                                            lowercase=lowercase,
-                                           lemmatize=lemmatize)
+                                           lemmatize=lemmatize,
+                                           remove_stopwords=remove_stopwords)
         # remove empty list
-        sentences = [sentence for sentence in sentences if sentence and len(sentence) > 1]
+        sentences = [sentence for sentence in sentences if sentence and len(sentence) > 2]
         
         self.logger.info('Number of Sentences: {}'.format(len(sentences)))
         self.logger.debug('Start ngram calculation!')                   
@@ -224,7 +251,8 @@ class TextPreprocessing(object):
                                                        self.pathFolder)
         t = time()
         # sentence level analysis       
-        self.sent = list(trigram[bigram[sentences]])
+        self.sent = [sentence for sentence in list(trigram[bigram[sentences]]) if len(sentence) > 2]
+        
         self.logger.info('Number of Sentences: {}'.format(len(self.sent)))
         self.logger.info('Time to create bigrams and trigrams: {} mins'.format(round((time() - t) / 60, 2)))
         
@@ -232,69 +260,86 @@ class TextPreprocessing(object):
 
 
 
-def main(corpus_info):
+def main(corpus_info, summary_dict):
     """
     conduct copurs text processing
     """
      # load main path from config file
     config = configparser.ConfigParser()    
-    config.read('config.ini')              
+    config.read('config.ini')          
+
+    pathMain = config['paths']['main']
         
-    prepro = TextPreprocessing(corpus_info['filename'], 
+    corpus = TextPreprocessing(corpus_info['filename'], 
                                corpus_info['language'], 
                                corpus_info['name_of_folder'], 
-                               config['paths']['main'], 
-                               corpus_info['pathLoad'] )
+                               pathMain, 
+                               corpus_info['pathLoad'])
     
-    prepro.set_paths()
+    corpus.set_paths()
     # start logger
-    logger = prepro.start_logger()
+    logger = corpus.start_logger()
     
+    logger.info('\n[TEXT PROCESSING]')
     logger.info('corpus_info: {}'.format(corpus_info))
     logger.info('bootstrapping: {}'.format(bootstrapping))
     logger.info('sampling_size: {}'.format(sampling_size))
     logger.info('num_corpus: {}'.format(num_corpus))
     logger.info('sampling_size: {}'.format(sampling_size))        
 
-    # document level
-    if prepro.filename.split('.')[0] != 'europarl-v7':
+    # document level - split into sentences
+    if corpus_info['document_level']:
 
-        documents = prepro.read_csv(corpus_info['delimiter'], corpus_info['column_name'])
+        documents = corpus.read_csv(corpus_info['delimiter'], corpus_info['column_name'])
         # text preprocessing:
-        prepro.clean_abbreviation()
+        corpus.clean_abbreviation()
         # get original setnences
-        sentences_original = prepro.get_sentences_from_documents()
+        sentences_original = corpus.get_sentences_from_documents()
         # get cleaned sentences
-        sentences = prepro.execute_preprocessing(sentences_original,
+        sentences = corpus.execute_preprocessing(sentences_original,
                                                  lowercase,
-                                                 lemmatize)
+                                                 lemmatize,
+                                                 remove_stopwords)
     
     # sentence level
-    elif prepro.filename.split('.')[0] == 'europarl-v7':
+    elif not corpus_info['document_level']:
         documents = []
         # get original setnences
 
-        sentences_original = prepro.read_sentences()
+        sentences_original = corpus.read_sentences()
         # get cleaned sentences
-        sentences = prepro.execute_preprocessing(sentences_original,
+        sentences = corpus.execute_preprocessing(sentences_original,
                                                  lowercase,
-                                                 lemmatize)
+                                                 lemmatize,
+                                                 remove_stopwords)
     # load sentences
     elif load:
-        sentences = prepro.load_processed_sentences()
+        sentences = corpus.load_files(corpus_info)
  
     # create list of sentences indexs, used for bootstrapping 
     if create_index_list:
-        prepro.create_index_list(num_corpus, sampling_size, bootstrapping)        
+        corpus.create_index_list(num_corpus, sampling_size, bootstrapping)        
 
-    if plot:
-        # plot word frequency
-        _ = plot_word_frequency(sentences, prepro.pathPlots, corpus_info['filename'])
+
+    # plot word frequency
+    fdist = plot_word_frequency(sentences, corpus.pathPlots, corpus_info['filename'])
         
+    
+    summary_dict[corpus_info['filename']] = {}
+    summary_dict[corpus_info['filename']]['number of total tokens'] = sum(fdist.values())
+    summary_dict[corpus_info['filename']]['vocabulary size'] = len(fdist)
+    summary_dict[corpus_info['filename']]['number of sentences'] = len(sentences)
+    summary_dict[corpus_info['filename']]['number of original sentences'] = len(sentences_original)
+    summary_dict[corpus_info['filename']]['number of documents'] = len(documents)
+    pd.DataFrame(summary_dict).to_csv(os.path.join(corpus.pathCSV, 'corpus_summary.csv'))
+    
+    logger.info(summary_dict)        
+    
     if save:
-        prepro.save_files()
+        corpus.save_files(corpus_info)
         
-    return documents, sentences, sentences_original
+        
+    return documents, sentences, sentences_original, summary_dict
 
 
 
@@ -307,17 +352,23 @@ if __name__ == "__main__":
     # bootstrapp the sentences
     bootstrapping = False
     # set the numer of corpora (relevant for bootstrapping)
-    num_corpus = 1
+    num_corpus = 1 if bootstrapping else 1
 
-    lemmatize = False
-    lowercase = False    
+    lemmatize = True
+    lowercase = True    
+    remove_stopwords = True
 
     # save sentences and index list
     save = True
     plot = True
     load = False
     
-    for number in [1]:    
+    documents = {}
+    sentences = {}
+    sentences_original = {}
+    summary_dict = {}
+    
+    for number in [10, 11, 12]:    
         corpus_info = select_corpus(number)
-        documents, sentences, sentences_original = main(corpus_info)
+        documents[number], sentences[number], sentences_original[number], summary_dict = main(corpus_info, summary_dict)
     
