@@ -1,5 +1,5 @@
 
-# Entropy in Legal Language (WIP)
+# Entropy in Legal Language
 
 ![Python](https://img.shields.io/badge/python-v3.6+-blue.svg)
  
