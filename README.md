@@ -38,17 +38,13 @@ court systems respectively. -->
 
 <!-- To account for language difference between German (BGH) and English (U.S. Supreme Court), the entropy of two non-legal corpus translations (EuroParl) have been calculated for comparison as well.  -->
 
----
 
-## How to run this code
-
-
-## Getting Started 
+# Getting Started 
 Download the github repository:
 ```bash
 git clone https://github.com/MauroLuzzatto/legal-entropy
 ```
-Run `makefile` to install all python modules needed for the executing of this code:
+Run the `makefile` to install all python modules needed to run the code:
 ```bash
 make init
 ```
@@ -66,7 +62,7 @@ python -m spacy download de_core_news_sm
 ```
 ---
 
-After the installation executed the code as follows:
+After the installation run the code as follows:
 
 1) Define the corpora to be processed in `corpus_setup.py`
 2) Define the corpora to be evaluated in `experiment_setup.py`
@@ -195,7 +191,7 @@ Finally, the calculated word entropies are visualized on a corpus level.
 - scipy==1.1.0
 - nltk==3.2.4
 - matplotlib==3.2.1
-- seabron==0.10.1
+- seaborn==0.10.1
 
 
 
