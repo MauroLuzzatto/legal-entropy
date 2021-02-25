@@ -2,26 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.pdf
+
 *.pickle
 *.pkl
 *.csv
-
-/jupyter_notebooks
-/swiss criminal code
-/reuters
-/relevant_words
-
-gensim_bigram.py
-gensim_accuracy.py
-check_prallel_corpora.py
-
-openlegaldata/bgh_files.pickle
-openlegaldata/*.csv
-openlegaldata/BGH/*.txt
-openlegaldata/*.zip
-# exclude this folder
-exploration
 
 
 
