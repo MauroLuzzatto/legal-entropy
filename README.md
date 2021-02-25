@@ -23,7 +23,7 @@ Tragin, M. & Vaulot, D. 2019. Novel diversity within marine Mamiellophyceae (Chl
 
 This repository contains the code developed for the paper:
 
-> "Entropy in Legal Language" by Roland Friedrich, Mauro Luzzatto, Elliott Ash (2020), Proceedings of the 2020 Natural Legal Language Processing (NLLP) Workshop, 24 August 2020
+> ["Entropy in Legal Language"](/paper/Friedrich-Luzzatto-Ash-Legal-Entropy.pdf) by Roland Friedrich, Mauro Luzzatto, Elliott Ash (2020), Proceedings of the 2020 Natural Legal Language Processing (NLLP) Workshop, 24 August 2020
 
 
 The code has been developed to investigate the word ambiguity in the written text of opinions by the **U.S. Supreme Court (SCOTUS)** and the **German Bundesgerichtshof (BGH)**, which are representative courts of the **common-law** and **civil-law** court systems. 
