@@ -7,5 +7,4 @@ init:
 	python -m spacy download de_core_news_sm
 
 black:
-	python -m black auxiliary
-	python -m black .
+	python -m black src

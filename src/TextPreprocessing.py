@@ -345,7 +345,9 @@ def main(corpus_info, summary_dict):
     """
     # load main path from config file
     config = configparser.ConfigParser()
-    config.read(r'C:\Users\maurol\OneDrive\Dokumente\Python_Scripts\legal-entropy\src\resources\config.ini')
+    config.read(
+        r"C:\Users\maurol\OneDrive\Dokumente\Python_Scripts\legal-entropy\src\resources\config.ini"
+    )
     print(config)
 
     pathMain = config["paths"]["main"]

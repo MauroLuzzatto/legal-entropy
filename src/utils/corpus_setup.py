@@ -22,9 +22,7 @@ def select_corpus(number):
     if number == 0:
         name_of_folder = "de_BGH_r"
         filename = "BGH_df_2019-12-13.csv"
-        pathLoad = (
-            r"C:\Users\maurol\OneDrive\Dokumente\Python_Scripts\LawProject\openlegaldata"
-        )
+        pathLoad = r"C:\Users\maurol\OneDrive\Dokumente\Python_Scripts\LawProject\openlegaldata"
         language = "de"
         delimiter = ","
         column_name = "content"
