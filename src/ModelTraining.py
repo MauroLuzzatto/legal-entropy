@@ -4,25 +4,23 @@ Created on Sun Oct  6 20:37:49 2019
 
 @author: mauro
 """
-
-from time import time  # To time our operations
 import os
 import multiprocessing
-from nltk.probability import FreqDist
-import matplotlib.pyplot as plt
-import numpy as np
 import pickle
 import itertools
 import random
 import json
+from time import time
 
-
+import numpy as np
+from nltk.probability import FreqDist
+import matplotlib.pyplot as plt
 from gensim.models.callbacks import CallbackAny2Vec
 from gensim.models import Word2Vec
 
-from auxiliary.preprocessing import create_folder
-from auxiliary.log import initalize_logger
-from auxiliary.experiment_setup import select_experiment
+from utils.preprocessing import create_folder
+from utils.log import initalize_logger
+from utils.experiment_setup import select_experiment
 
 
 cores = multiprocessing.cpu_count()  # Count the number of cores in a computer
@@ -56,16 +54,6 @@ class callback(CallbackAny2Vec):
     def on_epoch_end(self, model):
         """
         get model training loss.
-
-        Parameters
-        ----------
-        model : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
-
         """
         loss = model.get_latest_training_loss()
         if self.epoch == 0:

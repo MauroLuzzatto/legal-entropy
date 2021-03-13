@@ -4,24 +4,22 @@ Created on Sun Oct  6 14:21:02 2019
 
 @author: mauro
 """
-import numpy as np
-import pandas as pd  # For data handling
-from time import time  # To time our operations
-import os, sys
+
+import os
+import sys
 import pickle
-from scipy.stats import entropy
-
-# import json
-# import warnings
 import configparser
+from time import time
 
-# from gensim.models.callbacks import CallbackAny2Vec
+from scipy.stats import entropy
 from gensim.models import Word2Vec
 from ModelTraining import callback
+import numpy as np
+import pandas as pd
 
-from auxiliary.preprocessing import create_folder
-from auxiliary.experiment_setup import select_experiment
-from auxiliary.log import initalize_logger
+from utils.preprocessing import create_folder
+from utils.experiment_setup import select_experiment
+from utils.log import initalize_logger
 
 
 def get_list_of_relevant_words(df_words, language, single=True):

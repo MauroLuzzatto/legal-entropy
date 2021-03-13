@@ -4,22 +4,18 @@ Created on Mon Sep 30 21:26:29 2019
 
 @author: mauro
 """
-
-import re  # For preprocessing
-
-# import pandas as pd  # For data handling
-from time import time  # To time our operations
-
-# from collections import   # For word frequency
 import os
-import spacy  # For preprocessing
-from nltk.probability import FreqDist
+import sys
+import csv
+import re
+from time import time
 import itertools
+
+import spacy
+from nltk.probability import FreqDist
 import matplotlib.pyplot as plt
 import numpy as np
-import sys
 from gensim.models.phrases import Phrases, Phraser
-import csv
 
 # Count the number of cores in a computer
 np.random.seed(0)
@@ -58,7 +54,7 @@ def bootstrap(
     if bootstrapping:
         index_list = []
 
-        for ii in range(num_corpus):
+        for _ in range(num_corpus):
             # range of sentences to pick from
             index = np.arange(0, num_sentences)
             # number of indexes to pick

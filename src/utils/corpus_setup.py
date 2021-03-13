@@ -17,12 +17,13 @@ def select_corpus(number):
     language = "en"
     delimiter = ","
     column_name = "text"
+    document_level = True
 
     if number == 0:
         name_of_folder = "de_BGH_r"
         filename = "BGH_df_2019-12-13.csv"
         pathLoad = (
-            r"C:\Users\mauro\OneDrive\Dokumente\Python_Scripts\LawProject\openlegaldata"
+            r"C:\Users\maurol\OneDrive\Dokumente\Python_Scripts\LawProject\openlegaldata"
         )
         language = "de"
         delimiter = ","
@@ -95,4 +96,5 @@ def select_corpus(number):
     corpus_info["language"] = language
     corpus_info["delimiter"] = delimiter
     corpus_info["column_name"] = column_name
+    corpus_info["document_level"] = document_level
     return corpus_info

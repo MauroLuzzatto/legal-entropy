@@ -5,20 +5,21 @@ Created on Sat Mar 14 18:26:14 2020
 @author: mauro
 
 """
+import os
+import sys
+import pickle
+import json
+import configparser
 
-import pandas as pd  # For data handling
-import os, sys
+import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import pickle
 from matplotlib import colors as mcolors
-import json
-import configparser
 from scipy.stats import entropy
 
 from EntropyEvaluation import get_list_of_relevant_words, create_folder
-from auxiliary.experiment_setup import select_experiment
+from utils.experiment_setup import select_experiment
 
 
 def pos_tag(text, nlp):

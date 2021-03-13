@@ -5,29 +5,24 @@ Created on Mon Dec 23 21:51:22 2019
 @author: mauro
 """
 
-import pandas as pd  # For data handling
-from time import time  # To time our operations
 import os
-
-# import multiprocessing
-import numpy as np
-
-# import sys
 import json
-
-# import logging  # Setting up the loggings to monitor gensim
+import re
 import pickle
 from itertools import chain
-import re
+from time import time
 import configparser
+
+import pandas as pd
+import numpy as np
 
 np.random.seed(0)
 
 
-from auxiliary.corpus_setup import select_corpus
-from auxiliary.log import initalize_logger
+from utils.corpus_setup import select_corpus
+from utils.log import initalize_logger
 
-from auxiliary.preprocessing import (
+from utils.preprocessing import (
     sentence_preprocessing,
     plot_word_frequency,
     bootstrap,
@@ -350,7 +345,8 @@ def main(corpus_info, summary_dict):
     """
     # load main path from config file
     config = configparser.ConfigParser()
-    config.read("config.ini")
+    config.read(r'C:\Users\maurol\OneDrive\Dokumente\Python_Scripts\legal-entropy\src\resources\config.ini')
+    print(config)
 
     pathMain = config["paths"]["main"]
 
@@ -456,7 +452,7 @@ if __name__ == "__main__":
     sentences_original = {}
     summary_dict = {}
 
-    for number in [10, 11, 12]:
+    for number in [0]:
         corpus_info = select_corpus(number)
         (
             documents[number],

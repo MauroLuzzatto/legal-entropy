@@ -6,6 +6,7 @@ __pycache__/
 *.pickle
 *.pkl
 *.csv
+reports/
 
 
 
@@ -17,8 +18,6 @@ Wörter StGB.pdf
 
 # Distribution / packaging
 .Python
-1990/
-2012/
 _archive/
 build/
 develop-eggs/
