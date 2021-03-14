@@ -100,71 +100,27 @@ class TextPreprocessing(object):
         """
         remove dots from abbreviations, such that the sentence will be correctly split
         """
+
+        with open(os.path.join('src', 'resources', 'abbrevation.json')) as json_file:
+            abbrevation_dict = json.load(json_file)
+
         clean_docs = []
         for doc in self.documents:
 
-            abbrevation_list = [
-                "div.",
-                "Pub.",
-                "Misc.",
-                "ch.",
-                "u.",
-                "u.a.",
-                "1.",
-                "2.",
-                "3.",
-                "4.",
-                "5.",
-                "6.",
-                "7.",
-                "8.",
-                "9.",
-                "0.",
-                "Art.",
-                "Nr.",
-                "vgl.",
-                "ff.",
-                "Aufl.",
-                "Rn.",
-                "Fn.",
-                "Dr.",
-                "Prof.",
-                "II.",
-                "III.",
-                "f.",
-                "Reorg.",
-                "Jan.",
-                "Feb.",
-                "Mar.",
-                "Apr.",
-                "Jun.",
-                "Jul.",
-                "Aug.",
-                "Sept.",
-                "Oct.",
-                "Nov.",
-                "Dec.",
-            ]
-            for abbrevation in abbrevation_list:
+            for abbrevation in abbrevation_dict['general']:
                 doc = re.sub(abbrevation, lambda x: x.group().replace(".", ""), doc)
 
             if self.language == "en":
-                # doc = re.sub('Misc.|u.|u.a.|1.|2.|3.|4.|5.|6.|7.|8.|9.|0.|Art.|Nr.|vgl.|ff.|Aufl.|Rn.|Fn.|Dr.|Prof.|II.|III.|f.', lambda x: x.group().replace('.',''), doc)
                 doc = re.sub(
-                    "i.e.|ed.|Art.|L.Ed.|U.S.C.A.|seq.|C.C.A.|D.C.|S.Ct.|c.|i.|f.|Ed.|Ct.|v.|Inc.|Div.|U.S.|Sup.|Co.|10.|11.|12.|13.|14.|15.|16.|17.|18.|19.|20.|21.|22.|23.|24.|25.|26.|27.|28.|29.|30.|31.|II.|III.|Sci.|loci.|Int.",
+                    '|'.join(abbrevation_dict['en']),
                     lambda x: x.group().replace(".", ""),
                     doc,
                 )
-                doc = re.sub(
-                    "e.g.|Pub.L.|No.|id.|S.Rep.|S.Res.|Sess.|Cong.Rec.|cl.|Art.|Pt.A|U.S.S.G.|Ch.|Circ.|App.A.|Cf.|Ct.Cl.|C.C.A.|Ins.|Stat.|Ry.|Wall.|Rep.|Pa.|Bi.|e.V.|cent.|36.|37.|39.|40.|41.|42.|43.|44.|45.|50.|51.|52.|53.|54.|55.|56.|57.|58.|59.|60.|61.|62.|63.|64.|65.|66.|67.|68.|69.|App.|OD.|m.|Mi.|Ti.|Ka.|Diss.|Ed.|ders.|jug.|Öz.|Co.|j.|Özk.|St.|Sz.|Ö.|A.|B.|C.|D.|E.|F.|G.|H.|I.|J.|K.|L.|M.|N.|O.|P.|Q.|R.|S.|T.|U.|V.|W.|X.|Y.|Z.|Sch.",
-                    lambda x: x.group().replace(".", ""),
-                    doc,
-                )
-
+   
             elif self.language == "de":
                 # find abbrevations and remove dot
                 doc = re.sub(
-                    "Misc.|u.|u.a.|1.|2.|3.|4.|5.|6.|7.|8.|9.|0.|Art.|Nr.|vgl.|ff.|Aufl.|Rn.|Fn.|Dr.|Prof.|II.|III.|f.",
+                    '|'.join(abbrevation_dict['de']),
                     lambda x: x.group().replace(".", ""),
                     doc,
                 )
