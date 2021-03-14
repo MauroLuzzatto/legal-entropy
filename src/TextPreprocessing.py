@@ -190,12 +190,11 @@ class TextPreprocessing(object):
         """
         split paragraphs into sentences
         """
-
-        # nlp.add_pipe(nlp.create_pipe('sentencizer'))
+        nlp.add_pipe(nlp.create_pipe('sentencizer'))
         # split parapraphs into sentences
         sentences = []
         for _count, paragraph in enumerate(
-            nlp.pipe(self.paragraphs, n_threads=-1, batch_size=1000)
+            nlp.pipe(self.paragraphs, batch_size=1000)
         ):
             # tokenize the sentences
 
@@ -339,15 +338,37 @@ class TextPreprocessing(object):
         return self.sent
 
 
-def main(corpus_info, summary_dict):
+def create_corpus_summary(fdist, sentences, sentences_original, documents):
+    """
+    Create corpus summary statistics
+    """
+
+    summary_dict = {}
+    summary_dict[corpus_info["filename"]] = {}
+    summary_dict[corpus_info["filename"]]["number of total tokens"] = sum(
+        fdist.values()
+    )
+    summary_dict[corpus_info["filename"]]["vocabulary size"] = len(fdist)
+    summary_dict[corpus_info["filename"]]["number of sentences"] = len(sentences)
+    summary_dict[corpus_info["filename"]]["number of original sentences"] = len(
+        sentences_original
+    )
+    summary_dict[corpus_info["filename"]]["number of documents"] = len(documents)
+    pd.DataFrame(summary_dict).to_csv(
+        os.path.join(corpus.pathCSV, "corpus_summary.csv")
+    )
+    return summary_dict
+
+
+def main(corpus_info):
     """
     conduct copurs text processing
     """
     # load main path from config file
     config = configparser.ConfigParser()
-    config.read(r'C:\Users\maurol\OneDrive\Dokumente\Python_Scripts\legal-entropy\src\resources\config.ini')
-    print(config)
-
+    config.read(
+        os.path.join(os.getcwd(),"src",  "resources", "config.ini")
+    )
     pathMain = config["paths"]["main"]
 
     corpus = TextPreprocessing(
@@ -405,26 +426,13 @@ def main(corpus_info, summary_dict):
     # plot word frequency
     fdist = plot_word_frequency(sentences, corpus.pathPlots, corpus_info["filename"])
 
-    summary_dict[corpus_info["filename"]] = {}
-    summary_dict[corpus_info["filename"]]["number of total tokens"] = sum(
-        fdist.values()
-    )
-    summary_dict[corpus_info["filename"]]["vocabulary size"] = len(fdist)
-    summary_dict[corpus_info["filename"]]["number of sentences"] = len(sentences)
-    summary_dict[corpus_info["filename"]]["number of original sentences"] = len(
-        sentences_original
-    )
-    summary_dict[corpus_info["filename"]]["number of documents"] = len(documents)
-    pd.DataFrame(summary_dict).to_csv(
-        os.path.join(corpus.pathCSV, "corpus_summary.csv")
-    )
-
+    summary_dict = create_corpus_summary(fdist, sentences, sentences_original, documents)
     logger.info(summary_dict)
 
     if save:
         corpus.save_files(corpus_info)
 
-    return documents, sentences, sentences_original, summary_dict
+    return documents, sentences, sentences_original
 
 
 if __name__ == "__main__":
@@ -450,7 +458,6 @@ if __name__ == "__main__":
     documents = {}
     sentences = {}
     sentences_original = {}
-    summary_dict = {}
 
     for number in [0]:
         corpus_info = select_corpus(number)
@@ -458,5 +465,4 @@ if __name__ == "__main__":
             documents[number],
             sentences[number],
             sentences_original[number],
-            summary_dict,
-        ) = main(corpus_info, summary_dict)
+        ) = main(corpus_info)

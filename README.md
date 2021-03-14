@@ -25,11 +25,10 @@ This repository contains the code developed for the paper:
 
 > ["Entropy in Legal Language"](/paper/Friedrich-Luzzatto-Ash-Legal-Entropy.pdf) by Roland Friedrich, Mauro Luzzatto, Elliott Ash (2020), Proceedings of the 2020 Natural Legal Language Processing (NLLP) Workshop, 24 August 2020
 
+A novel method has been introduced to measure the word ambiguity, i.e. local word entropy, in the corpora, based on a word2vec model. 
 
 The code has been developed to investigate the word ambiguity in the written text of opinions by the **U.S. Supreme Court (SCOTUS)** and the **German Bundesgerichtshof (BGH)**, which are representative courts of the **common-law** and **civil-law** court systems. 
 
-
-A novel method has been introduced to measure the word ambiguity, i.e. local word entropy, in the corpora, based on a word2vec model. 
 
 <!-- Word embeddings are used to calculate the conditional probability of the context words of all corpus words, based on this distribution the entropy is calculated per word level and then aggregated to corpus level -->
 
@@ -41,6 +40,8 @@ court systems respectively. -->
 
 
 # Getting Started 
+
+## Installation
 Download the github repository:
 ```bash
 git clone https://github.com/MauroLuzzatto/legal-entropy
@@ -61,7 +62,8 @@ python -m spacy download en_core_web_sm
 ```bash
 python -m spacy download de_core_news_sm
 ```
----
+
+## Run Code
 
 After the installation run the code as follows:
 
@@ -71,11 +73,6 @@ After the installation run the code as follows:
 4) run `ModelTraining.py`
 5) run `EntropyEvaluation.py`
 6) run `EntropyVisualization.py`
-
-
-
-
-
 
 
 # Code Overview
@@ -177,12 +174,6 @@ Finally, the calculated word entropies are visualized on a corpus level.
 - `Visualization.py`: functions for visualizing the results
 
 
-
-
-
-
-
-
 ### Python Module Requirements
 - Python==3.6.8
 - gensim==3.8.1
@@ -193,8 +184,6 @@ Finally, the calculated word entropies are visualized on a corpus level.
 - nltk==3.2.4
 - matplotlib==3.2.1
 - seaborn==0.10.1
-
-
 
 ## Authors
 * **Mauro Luzzatto** - [Maurol](https://github.com/MauroLuzzatto)
