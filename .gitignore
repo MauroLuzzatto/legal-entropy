@@ -6,12 +6,11 @@ __pycache__/
 *.pickle
 *.pkl
 *.csv
+
+# Folders
+src/_archive
 reports/
 
-
-
-Wörter StGB.csv
-Wörter StGB.pdf
 
 # C extensions
 *.so

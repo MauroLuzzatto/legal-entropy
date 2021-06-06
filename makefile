@@ -1,6 +1,9 @@
 .DEFAULT: build
 
 
+setup: env.create activate init
+
+
 init:
 	pip install -r requirements.txt
 	python -m spacy download en_core_web_sm
@@ -11,6 +14,9 @@ black:
 
 activate:
 	conda activate entropy_env
+
+env.create:
+	conda create --name entropy_env python=3.8.5
 
 env.export:
 	conda env export > environment.yml

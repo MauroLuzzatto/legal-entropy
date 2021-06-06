@@ -21,6 +21,16 @@ from gensim.models.phrases import Phrases, Phraser
 np.random.seed(0)
 
 
+def sentence_selection(sentences):
+    """
+    select sentences that are not only space and have more than two tokens
+    """
+    return [
+        sent.strip()
+        for sent in sentences
+        if (sent or not sent.isspace()) and len(sent.split()) > 2
+    ]
+
 def create_folder(path):
     """
     create folder, if it doesn't already exist
