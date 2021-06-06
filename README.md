@@ -55,7 +55,6 @@ Or install python requirements and spacy module manually:
 ```bash
 pip install -r requirements.txt
 ```
-Install the spacy language models (en, de):
 ```bash
 python -m spacy download en_core_web_sm
 ```
@@ -173,17 +172,6 @@ Finally, the calculated word entropies are visualized on a corpus level.
 
 - `Visualization.py`: functions for visualizing the results
 
-
-### Python Module Requirements
-- Python==3.6.8
-- gensim==3.8.1
-- pandas==1.0.3
-- numpy==1.18.2
-- spacy==2.2.2
-- scipy==1.1.0
-- nltk==3.2.4
-- matplotlib==3.2.1
-- seaborn==0.10.1
 
 ## Authors
 * **Mauro Luzzatto** - [Maurol](https://github.com/MauroLuzzatto)
