@@ -7,10 +7,12 @@ __pycache__/
 *.pkl
 *.csv
 
+
 # Folders
 src/_archive
 reports/
-
+data/*
+.vscode
 
 # C extensions
 *.so

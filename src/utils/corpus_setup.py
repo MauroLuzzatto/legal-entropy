@@ -20,9 +20,9 @@ def select_corpus(number):
     document_level = True
 
     if number == 0:
-        name_of_folder = "de_BGH_r"
+        name_of_folder = "de_BGH"
         filename = "BGH_df_2019-12-13.csv"
-        pathLoad = r"C:\Users\maurol\OneDrive\Dokumente\Python_Scripts\LawProject\openlegaldata"
+        pathLoad = r"data\open_legal_data"
         language = "de"
         delimiter = ","
         column_name = "content"
@@ -86,6 +86,14 @@ def select_corpus(number):
         language = "en"
         delimiter = ";"
         column_name = "text"
+
+    elif number == 10:
+        name_of_folder = "de_BGH_r"
+        filename = "BGH_df_2019-12-13.csv"
+        pathLoad = r"C:\Users\maurol\OneDrive\Dokumente\Python_Scripts\LawProject\openlegaldata"
+        language = "de"
+        delimiter = ","
+        column_name = "content"
 
     corpus_info = {}
     corpus_info["name_of_folder"] = name_of_folder
